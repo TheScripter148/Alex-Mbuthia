@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, ShieldCheck, Camera, Calculator, FolderOpen, Undo2, Redo2 } from 'lucide-react';
+import { Download, ShieldCheck, Camera, Calculator, FolderOpen, Undo2, Redo2, Image as ImageIcon } from 'lucide-react';
 import { ProjectState } from '../types';
 
 interface HeaderProps {
@@ -9,6 +9,7 @@ interface HeaderProps {
   onOpenQualityChecker: () => void;
   onOpenExportModal: () => void;
   onOpenProjectManager: () => void;
+  onOpenStockSearch: () => void;
   onToggleViewMode: () => void;
   onUndo: () => void;
   onRedo: () => void;
@@ -23,6 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQualityChecker,
   onOpenExportModal,
   onOpenProjectManager,
+  onOpenStockSearch,
   onToggleViewMode,
   onUndo,
   onRedo,
@@ -86,6 +88,14 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span>Quality Inspector</span>
+        </button>
+        <button
+          onClick={onOpenStockSearch}
+          className="hover:text-amber-300 transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5"
+          title="Search & import royalty-free stock artwork"
+        >
+          <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+          <span>Stock Imagery</span>
         </button>
         <button
           onClick={onOpenProjectManager}

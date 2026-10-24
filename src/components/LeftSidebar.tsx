@@ -17,6 +17,10 @@ import {
   Maximize2,
   Shrink,
   Contrast,
+  Search,
+  ShieldCheck,
+  Filter,
+  X,
 } from 'lucide-react';
 import { CalculatedDimensions, CanvasLayer, CoverTemplate, CoverType, ImageLayer, ProjectState, TextEffectType, TextLayer } from '../types';
 import { GENRE_PRESETS } from '../constants/genres';
@@ -26,6 +30,7 @@ import { generateAllLayoutVariations, generateAutomatedCover, LayoutVariation, L
 import { calculateFitFontSize, getFrontCoverTextBounds } from '../utils/textMeasurement';
 import { BlurbEditorPanel } from './BlurbEditorPanel';
 import { TypographyEffectsPanel } from './TypographyEffectsPanel';
+import { CURATED_STOCK_IMAGES, STOCK_CATEGORIES, StockImageItem } from '../constants/stockImages';
 
 export type SidebarTab = 'details' | 'auto_design' | 'templates' | 'typography' | 'images' | 'blurb';
 
@@ -36,8 +41,10 @@ interface LeftSidebarProps {
   onUpdateBookDetails: (details: Partial<ProjectState['bookDetails']>) => void;
   onUpdateLayer: (layerId: string, updates: Partial<CanvasLayer>) => void;
   onApplyNewLayers: (layers: CanvasLayer[], bg?: string, grad?: string) => void;
+  onAddLayer?: (layer: CanvasLayer) => void;
   onOpenUploadModal: () => void;
   onOpenCalculator: () => void;
+  onOpenStockSearch?: () => void;
 }
 
 export const LeftSidebar: React.FC<LeftSidebarProps> = ({
@@ -47,8 +54,10 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   onUpdateBookDetails,
   onUpdateLayer,
   onApplyNewLayers,
+  onAddLayer,
   onOpenUploadModal,
   onOpenCalculator,
+  onOpenStockSearch,
 }) => {
   const { bookDetails, dimensions, coverType, layers, selectedLayerId } = project;
   const selectedLayer = layers.find((l) => l.id === selectedLayerId);
@@ -64,6 +73,11 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const [aiPrompt, setAiPrompt] = useState<string>('');
   const [isGeneratingAiImage, setIsGeneratingAiImage] = useState(false);
   const [aiImageError, setAiImageError] = useState<string | null>(null);
+
+  // Images Sub-tab: 'stock' | 'ai' | 'filters'
+  const [imagesSubTab, setImagesSubTab] = useState<'stock' | 'ai' | 'filters'>('stock');
+  const [sidebarStockQuery, setSidebarStockQuery] = useState('');
+  const [sidebarStockCategory, setSidebarStockCategory] = useState('all');
 
   // Typography Sub-tabs: Curated Pairings | Typography Effects | Layer Inspector
   const [typographySubTab, setTypographySubTab] = useState<'pairings' | 'effects' | 'single'>('pairings');
@@ -321,6 +335,103 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
     } finally {
       setIsGeneratingAiImage(false);
     }
+  };
+
+  const handleImportStockAsBackground = (image: StockImageItem) => {
+    const isWrap = coverType === 'paperback' || coverType === 'hardcover';
+    const bgX = isWrap ? dimensions.frontRegion.x : 0;
+    const bgY = isWrap ? dimensions.frontRegion.y : 0;
+    const bgW = isWrap ? dimensions.frontRegion.width : dimensions.canvasWidthPx;
+    const bgH = isWrap ? dimensions.frontRegion.height : dimensions.canvasHeightPx;
+
+    const newBgLayer: ImageLayer = {
+      id: `layer-bg-stock-${Date.now()}`,
+      type: 'image',
+      name: `Stock BG: ${image.title}`,
+      role: 'artwork',
+      src: image.url,
+      x: bgX,
+      y: bgY,
+      width: bgW,
+      height: bgH,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0,
+      opacity: 0.95,
+      brightness: 0,
+      contrast: 0,
+      saturation: 0,
+      hue: 0,
+      blur: 0,
+      sepia: 0,
+      grayscale: 0,
+      vignette: 15,
+      warmth: 0,
+      blendMode: 'source-over',
+      locked: true,
+      visible: true,
+      aspectRatioMode: 'fill',
+    };
+
+    const nonBgLayers = layers.filter(
+      (l) => !(l.type === 'image' && (l.role === 'background' || l.role === 'artwork'))
+    );
+
+    onApplyNewLayers([newBgLayer, ...nonBgLayers]);
+    setPairingNotice(`Imported "${image.title}" as cover background!`);
+    setTimeout(() => setPairingNotice(null), 3000);
+  };
+
+  const handleImportStockAsForeground = (image: StockImageItem) => {
+    const isWrap = coverType === 'paperback' || coverType === 'hardcover';
+    const frontCenterX = isWrap
+      ? dimensions.frontRegion.x + dimensions.frontRegion.width / 2
+      : dimensions.canvasWidthPx / 2;
+    const frontCenterY = isWrap
+      ? dimensions.frontRegion.y + dimensions.frontRegion.height / 2
+      : dimensions.canvasHeightPx / 2;
+
+    const targetWidth = Math.round(
+      (isWrap ? dimensions.frontRegion.width : dimensions.canvasWidthPx) * 0.55
+    );
+    const targetHeight = Math.round(targetWidth * 1.25);
+
+    const newForegroundLayer: ImageLayer = {
+      id: `layer-fg-stock-${Date.now()}`,
+      type: 'image',
+      name: `Art: ${image.title}`,
+      role: 'overlay',
+      src: image.url,
+      x: frontCenterX - targetWidth / 2,
+      y: frontCenterY - targetHeight / 2,
+      width: targetWidth,
+      height: targetHeight,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0,
+      opacity: 0.92,
+      brightness: 0,
+      contrast: 5,
+      saturation: 0,
+      hue: 0,
+      blur: 0,
+      sepia: 0,
+      grayscale: 0,
+      vignette: 0,
+      warmth: 0,
+      blendMode: 'source-over',
+      locked: false,
+      visible: true,
+      aspectRatioMode: 'fit',
+    };
+
+    if (onAddLayer) {
+      onAddLayer(newForegroundLayer);
+    } else {
+      onApplyNewLayers([...layers, newForegroundLayer]);
+    }
+    setPairingNotice(`Imported "${image.title}" as foreground artwork!`);
+    setTimeout(() => setPairingNotice(null), 3000);
   };
 
   // Font options list
@@ -1026,150 +1137,330 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({
             </div>
           )}
 
-          {/* TAB 5: IMAGES & FILTERS */}
+          {/* TAB 5: IMAGES & STOCK ARTWORK */}
           {activeTab === 'images' && (
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               <div className="flex items-center justify-between pb-2 border-b border-neutral-800">
-                <span className="font-semibold text-neutral-200 text-xs">Artwork & Filter Adjustments</span>
-                <button
-                  type="button"
-                  onClick={onOpenUploadModal}
-                  className="flex items-center gap-1 text-[11px] text-amber-400 hover:underline"
-                >
-                  <Upload className="w-3 h-3" />
-                  <span>Upload Image</span>
-                </button>
-              </div>
-
-              {/* AI Image Generation Prompt */}
-              <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 space-y-2.5">
-                <div className="flex items-center gap-2 text-neutral-200 font-semibold text-xs">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Generate Background via Gemini</span>
-                </div>
-                <input
-                  type="text"
-                  value={aiPrompt}
-                  onChange={(e) => setAiPrompt(e.target.value)}
-                  placeholder="e.g. A lone wanderer standing on a clifftop under two moons..."
-                  className="w-full px-3 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-100 placeholder:text-neutral-600 focus:outline-none focus:border-amber-500"
-                />
-                {aiImageError && <span className="text-[10px] text-red-400 block">{aiImageError}</span>}
-                <button
-                  type="button"
-                  onClick={handleAiGenerateBackground}
-                  disabled={isGeneratingAiImage || !aiPrompt.trim()}
-                  className="w-full py-2 px-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{isGeneratingAiImage ? 'Generating Artwork...' : 'Generate Cover Art'}</span>
-                </button>
-              </div>
-
-              {/* Image Filter Sliders */}
-              {selectedImageLayer ? (
-                <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-neutral-200 text-xs">Filter: {selectedImageLayer.name}</span>
+                <span className="font-semibold text-neutral-200 text-xs">Artwork & Stock Imagery</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onOpenUploadModal}
+                    className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white transition-colors"
+                    title="Upload local image file"
+                  >
+                    <Upload className="w-3 h-3 text-amber-400" />
+                    <span>Upload</span>
+                  </button>
+                  {onOpenStockSearch && (
                     <button
                       type="button"
-                      onClick={() =>
-                        onUpdateLayer(selectedImageLayer.id, {
-                          brightness: 0,
-                          contrast: 0,
-                          saturation: 0,
-                          hue: 0,
-                          blur: 0,
-                          vignette: 0,
-                        })
-                      }
-                      title="Reset Adjustments"
-                      className="text-[10px] text-neutral-400 hover:text-white flex items-center gap-1"
+                      onClick={onOpenStockSearch}
+                      className="flex items-center gap-1 text-[11px] text-amber-400 hover:underline font-medium"
+                      title="Open full-screen royalty-free stock explorer"
                     >
-                      <RotateCcw className="w-3 h-3" />
-                      <span>Reset</span>
+                      <Maximize2 className="w-3 h-3" />
+                      <span>Explorer</span>
                     </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Segmented Image Sub-Mode Switcher */}
+              <div className="flex items-center p-1 bg-neutral-950 border border-neutral-800 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setImagesSubTab('stock')}
+                  className={`flex-1 py-1.5 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 ${
+                    imagesSubTab === 'stock'
+                      ? 'bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold shadow-sm'
+                      : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <Search className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Stock Art</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImagesSubTab('ai')}
+                  className={`flex-1 py-1.5 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 ${
+                    imagesSubTab === 'ai'
+                      ? 'bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold shadow-sm'
+                      : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>AI Gen</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImagesSubTab('filters')}
+                  className={`flex-1 py-1.5 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 ${
+                    imagesSubTab === 'filters'
+                      ? 'bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold shadow-sm'
+                      : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Filters</span>
+                </button>
+              </div>
+
+              {/* SUBTAB 1: ROYALTY-FREE STOCK SEARCH & BROWSER */}
+              {imagesSubTab === 'stock' && (
+                <div className="space-y-3">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400" />
+                    <input
+                      type="text"
+                      value={sidebarStockQuery}
+                      onChange={(e) => setSidebarStockQuery(e.target.value)}
+                      placeholder="Search stock art (castle, space, noir, fog...)"
+                      className="w-full pl-8 pr-7 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                    {sidebarStockQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSidebarStockQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
 
-                  {/* Brightness */}
-                  <div>
-                    <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                      <span>Brightness</span>
-                      <span className="font-mono text-neutral-300">{selectedImageLayer.brightness}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-50"
-                      max="50"
-                      value={selectedImageLayer.brightness || 0}
-                      onChange={(e) =>
-                        onUpdateLayer(selectedImageLayer.id, { brightness: parseInt(e.target.value, 10) })
-                      }
-                      className="w-full accent-amber-500"
-                    />
+                  {/* Category Pills */}
+                  <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[11px] scrollbar-none">
+                    {STOCK_CATEGORIES.slice(0, 7).map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setSidebarStockCategory(cat.id)}
+                        className={`px-2.5 py-0.5 rounded-full whitespace-nowrap text-[10px] font-medium transition-colors ${
+                          sidebarStockCategory === cat.id
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold'
+                            : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
                   </div>
 
-                  {/* Contrast */}
-                  <div>
-                    <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                      <span>Contrast</span>
-                      <span className="font-mono text-neutral-300">{selectedImageLayer.contrast}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-50"
-                      max="50"
-                      value={selectedImageLayer.contrast || 0}
-                      onChange={(e) =>
-                        onUpdateLayer(selectedImageLayer.id, { contrast: parseInt(e.target.value, 10) })
-                      }
-                      className="w-full accent-amber-500"
-                    />
-                  </div>
+                  {/* Launch Fullscreen Explorer Banner */}
+                  {onOpenStockSearch && (
+                    <button
+                      type="button"
+                      onClick={onOpenStockSearch}
+                      className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-between hover:border-amber-400 transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Open Fullscreen Stock Explorer</span>
+                      </div>
+                      <span className="text-[10px] text-amber-400">Expand →</span>
+                    </button>
+                  )}
 
-                  {/* Saturation */}
-                  <div>
-                    <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                      <span>Saturation</span>
-                      <span className="font-mono text-neutral-300">{selectedImageLayer.saturation}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="-100"
-                      max="100"
-                      value={selectedImageLayer.saturation || 0}
-                      onChange={(e) =>
-                        onUpdateLayer(selectedImageLayer.id, { saturation: parseInt(e.target.value, 10) })
-                      }
-                      className="w-full accent-amber-500"
-                    />
-                  </div>
+                  {/* Stock Cards Grid */}
+                  <div className="grid grid-cols-2 gap-2 pt-1 max-h-[52vh] overflow-y-auto pr-1">
+                    {CURATED_STOCK_IMAGES
+                      .filter((img) => {
+                        if (sidebarStockCategory !== 'all' && img.genre !== sidebarStockCategory) return false;
+                        if (sidebarStockQuery.trim()) {
+                          const q = sidebarStockQuery.toLowerCase().trim();
+                          return (
+                            img.title.toLowerCase().includes(q) ||
+                            img.tags.some((t) => t.toLowerCase().includes(q))
+                          );
+                        }
+                        return true;
+                      })
+                      .map((img) => (
+                        <div
+                          key={img.id}
+                          className="group relative rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 hover:border-amber-500/60 transition-all flex flex-col"
+                        >
+                          <div className="relative aspect-[3/4] bg-neutral-900 overflow-hidden">
+                            <img
+                              src={img.thumbUrl}
+                              alt={img.title}
+                              loading="lazy"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
 
-                  {/* Vignette */}
-                  <div>
-                    <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
-                      <span>Atmospheric Vignette</span>
-                      <span className="font-mono text-neutral-300">{selectedImageLayer.vignette || 0}%</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={selectedImageLayer.vignette || 0}
-                      onChange={(e) =>
-                        onUpdateLayer(selectedImageLayer.id, { vignette: parseInt(e.target.value, 10) })
-                      }
-                      className="w-full accent-amber-500"
-                    />
+                            {/* Floating Action Buttons */}
+                            <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-1.5 gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleImportStockAsBackground(img)}
+                                className="w-full py-1 px-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold text-[10px] flex items-center justify-center gap-1 transition-colors"
+                              >
+                                <ImageIcon className="w-2.5 h-2.5" />
+                                <span>Set Background</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleImportStockAsForeground(img)}
+                                className="w-full py-1 px-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[9px] font-medium flex items-center justify-center gap-1 border border-neutral-700 transition-colors"
+                              >
+                                <Layers className="w-2.5 h-2.5 text-amber-400" />
+                                <span>Add Foreground</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="p-1.5 space-y-0.5 bg-neutral-950">
+                            <span className="text-[10px] font-medium text-white truncate block" title={img.title}>
+                              {img.title}
+                            </span>
+                            <div className="flex items-center justify-between text-[8px] text-neutral-500">
+                              <span className="truncate">{img.author}</span>
+                              <span className="text-emerald-400 font-mono">Free</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
-              ) : (
-                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-center space-y-2">
-                  <ImageIcon className="w-8 h-8 text-neutral-600 mx-auto" />
-                  <span className="text-xs font-semibold text-neutral-300 block">Select Image Layer</span>
-                  <p className="text-[11px] text-neutral-500">
-                    Click on an image or background on the canvas to adjust brightness, contrast, and filters.
-                  </p>
+              )}
+
+              {/* SUBTAB 2: AI IMAGE GENERATOR */}
+              {imagesSubTab === 'ai' && (
+                <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 space-y-2.5">
+                  <div className="flex items-center gap-2 text-neutral-200 font-semibold text-xs">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Generate Background via Gemini</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="e.g. A lone wanderer standing on a clifftop under two moons..."
+                    className="w-full px-3 py-2 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-neutral-100 placeholder:text-neutral-600 focus:outline-none focus:border-amber-500"
+                  />
+                  {aiImageError && <span className="text-[10px] text-red-400 block">{aiImageError}</span>}
+                  <button
+                    type="button"
+                    onClick={handleAiGenerateBackground}
+                    disabled={isGeneratingAiImage || !aiPrompt.trim()}
+                    className="w-full py-2 px-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{isGeneratingAiImage ? 'Generating Artwork...' : 'Generate Cover Art'}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* SUBTAB 3: IMAGE FILTERS & ADJUSTMENTS */}
+              {imagesSubTab === 'filters' && (
+                <div>
+                  {selectedImageLayer ? (
+                    <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-800 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-neutral-200 text-xs">Filter: {selectedImageLayer.name}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onUpdateLayer(selectedImageLayer.id, {
+                              brightness: 0,
+                              contrast: 0,
+                              saturation: 0,
+                              hue: 0,
+                              blur: 0,
+                              vignette: 0,
+                            })
+                          }
+                          title="Reset Adjustments"
+                          className="text-[10px] text-neutral-400 hover:text-white flex items-center gap-1"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Reset</span>
+                        </button>
+                      </div>
+
+                      {/* Brightness */}
+                      <div>
+                        <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
+                          <span>Brightness</span>
+                          <span className="font-mono text-neutral-300">{selectedImageLayer.brightness}</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="-50"
+                          max="50"
+                          value={selectedImageLayer.brightness || 0}
+                          onChange={(e) =>
+                            onUpdateLayer(selectedImageLayer.id, { brightness: parseInt(e.target.value, 10) })
+                          }
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      {/* Contrast */}
+                      <div>
+                        <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
+                          <span>Contrast</span>
+                          <span className="font-mono text-neutral-300">{selectedImageLayer.contrast}</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="-50"
+                          max="50"
+                          value={selectedImageLayer.contrast || 0}
+                          onChange={(e) =>
+                            onUpdateLayer(selectedImageLayer.id, { contrast: parseInt(e.target.value, 10) })
+                          }
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      {/* Saturation */}
+                      <div>
+                        <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
+                          <span>Saturation</span>
+                          <span className="font-mono text-neutral-300">{selectedImageLayer.saturation}</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="-100"
+                          max="100"
+                          value={selectedImageLayer.saturation || 0}
+                          onChange={(e) =>
+                            onUpdateLayer(selectedImageLayer.id, { saturation: parseInt(e.target.value, 10) })
+                          }
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+
+                      {/* Vignette */}
+                      <div>
+                        <div className="flex justify-between text-[11px] text-neutral-400 mb-1">
+                          <span>Atmospheric Vignette</span>
+                          <span className="font-mono text-neutral-300">{selectedImageLayer.vignette || 0}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={selectedImageLayer.vignette || 0}
+                          onChange={(e) =>
+                            onUpdateLayer(selectedImageLayer.id, { vignette: parseInt(e.target.value, 10) })
+                          }
+                          className="w-full accent-amber-500"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800 text-center space-y-2">
+                      <ImageIcon className="w-8 h-8 text-neutral-600 mx-auto" />
+                      <span className="text-xs font-semibold text-neutral-300 block">Select Image Layer</span>
+                      <p className="text-[11px] text-neutral-500">
+                        Click on an image or background on the canvas to adjust brightness, contrast, and filters.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

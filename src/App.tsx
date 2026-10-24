@@ -13,6 +13,8 @@ import { QualityCheckerModal } from './components/QualityCheckerModal';
 import { ExportModal } from './components/ExportModal';
 import { UploadExistingModal } from './components/UploadExistingModal';
 import { ProjectManagerModal } from './components/ProjectManagerModal';
+import { StockSearchModal } from './components/StockSearchModal';
+import { Sparkles } from 'lucide-react';
 
 const INITIAL_PRINT_SPECS: PrintSpecs = {
   coverType: 'paperback',
@@ -95,7 +97,14 @@ export default function App() {
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   const [isProjectManagerOpen, setIsProjectManagerOpen] = useState<boolean>(false);
+  const [isStockSearchOpen, setIsStockSearchOpen] = useState<boolean>(false);
   const [activeSidebarTab, setActiveSidebarTab] = useState<SidebarTab>('details');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   const canvasElementRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -142,6 +151,16 @@ export default function App() {
     setProject((prev) => {
       const updatedLayers = prev.layers.map((l) => (l.id === layerId ? ({ ...l, ...updates } as CanvasLayer) : l));
       const next = { ...prev, layers: updatedLayers, lastModified: Date.now() };
+      return next;
+    });
+  };
+
+  // Add Layer Handler
+  const handleAddLayer = (layer: CanvasLayer) => {
+    setProject((prev) => {
+      const nextLayers = [...prev.layers, layer];
+      const next = { ...prev, layers: nextLayers, selectedLayerId: layer.id, lastModified: Date.now() };
+      pushHistory(next);
       return next;
     });
   };
@@ -362,6 +381,7 @@ export default function App() {
         onOpenQualityChecker={() => setIsQualityCheckerOpen(true)}
         onOpenExportModal={() => setIsExportModalOpen(true)}
         onOpenProjectManager={() => setIsProjectManagerOpen(true)}
+        onOpenStockSearch={() => setIsStockSearchOpen(true)}
         onToggleViewMode={() =>
           setProject((prev) => ({
             ...prev,
@@ -384,8 +404,10 @@ export default function App() {
           onUpdateBookDetails={handleUpdateBookDetails}
           onUpdateLayer={handleUpdateLayer}
           onApplyNewLayers={handleApplyNewLayers}
+          onAddLayer={handleAddLayer}
           onOpenUploadModal={() => setIsUploadModalOpen(true)}
           onOpenCalculator={() => setIsCalculatorOpen(true)}
+          onOpenStockSearch={() => setIsStockSearchOpen(true)}
         />
 
         {/* Center Live Canvas Viewport */}
@@ -471,6 +493,24 @@ export default function App() {
           // Trigger visual notice if needed
         }}
       />
+
+      {/* Stock Artwork Explorer Modal */}
+      <StockSearchModal
+        isOpen={isStockSearchOpen}
+        onClose={() => setIsStockSearchOpen(false)}
+        project={project}
+        onApplyNewLayers={handleApplyNewLayers}
+        onAddLayer={handleAddLayer}
+        onNotify={showToast}
+      />
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-neutral-900 border border-amber-500/40 text-amber-300 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl flex items-center gap-2 backdrop-blur-md animate-in fade-in slide-in-from-bottom-2">
+          <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }

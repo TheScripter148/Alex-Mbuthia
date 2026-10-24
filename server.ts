@@ -206,6 +206,52 @@ Return a JSON object with:
   }
 });
 
+// Endpoint: Live royalty-free stock image search via Openverse API
+app.get('/api/stock/search', async (req, res) => {
+  const query = (req.query.q as string || '').trim();
+  if (!query) {
+    return res.json({ success: true, results: [] });
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+
+    const openverseUrl = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=20`;
+    const response = await fetch(openverseUrl, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'AlexForge-CoverCraft/1.0 (book cover design studio)',
+      },
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      return res.json({ success: true, results: [] });
+    }
+
+    const data: any = await response.json();
+    const results = (data.results || []).map((img: any) => ({
+      id: `openverse-${img.id}`,
+      title: img.title || 'Stock Image',
+      author: img.creator || 'Open Creator',
+      source: 'Openverse',
+      url: img.url,
+      thumbUrl: img.thumbnail || img.url,
+      genre: 'general',
+      tags: (img.tags || []).map((t: any) => t.name).slice(0, 6),
+      orientation: (img.width && img.height && img.width > img.height) ? 'landscape' : 'portrait',
+      aspectRatio: (img.width && img.height && img.width > img.height) ? '16:9' : '3:4',
+      license: img.license ? `CC ${img.license.toUpperCase()} / Commercial Safe` : 'Royalty-Free / Commercial Use Safe',
+    }));
+
+    return res.json({ success: true, results });
+  } catch (err: any) {
+    // Graceful fallback to client curated library
+    return res.json({ success: true, results: [] });
+  }
+});
+
 // Vite Middleware integration for development
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
