@@ -1,0 +1,913 @@
+ALEXFORGE COVERCRAFT: PROFESSIONAL BOOK COVER DESIGN STUDIO UPGRADE
+
+1. YOUR ROLE AND MAIN OBJECTIVE
+
+Act as a senior software engineer, professional book cover designer, UI/UX specialist, image processing engineer, and print production expert.
+
+I have an existing working HTML application called AlexForge CoverCraft. Your task is to upgrade it into a professional, intelligent, automated book cover design studio that produces beautiful, commercially usable book covers for ebooks, paperbacks, and hardcovers.
+
+The application should be powerful enough for professional authors and independent publishers while remaining exceptionally simple to use.
+
+The goal is not to create another complicated Canva clone. The goal is to build a book cover studio that automates the difficult work and allows users to produce professional covers with minimal effort.
+
+IMPORTANT: Upgrade my existing application rather than rebuilding everything from scratch. First inspect the existing source code, identify its current features, and understand how its components work. Preserve all working features and improve them. Do not remove existing functionality unless there is a clear technical reason and an equivalent or better replacement is provided.
+
+Do not merely create a visual demonstration. Implement working functionality.
+
+2. BRAND IDENTITY
+
+Application name: AlexForge CoverCraft
+
+Parent brand: Alex FORGE Studio
+
+Brand personality:
+
+- Professional and creative.
+- Modern and elegant.
+- Intelligent and automated.
+- Simple enough for beginners.
+- Powerful enough for experienced authors.
+- Responsive on phones, tablets, and computers.
+
+Use a clean, modern interface with a professional color palette, attractive typography, well-organized controls, and sufficient spacing.
+
+Avoid overcrowded toolbars, unnecessary panels, excessive buttons, and complicated workflows.
+
+The application must work well on mobile devices, including Android phones.
+
+3. CREATE A SIMPLE STARTING EXPERIENCE
+
+When a user opens the application, present four clear options:
+
+1. Create a New Cover: Start with a blank canvas and enter book details.
+2. Upload an Existing Cover: Import an image or supported PDF for editing or redesigning.
+3. Use a Template: Select a professionally designed cover or paperback wrap.
+4. Create a Cover Automatically: Enter book details and allow the system to generate an attractive initial design.
+
+Include a clear button labelled Start Designing.
+
+Do not force the user to configure numerous settings before beginning.
+
+Provide a simple guided process:
+
+Step 1: Choose a cover type.
+Step 2: Enter book details.
+Step 3: Select a genre or design style.
+Step 4: Generate the design.
+Step 5: Preview and make adjustments.
+Step 6: Validate and export.
+
+Experienced users should also be able to skip the guided process and work directly in the editor.
+
+4. INTELLIGENT AUTOMATIC BOOK COVER DESIGN
+
+This is one of the most important features.
+
+Build a design assistant that automatically creates a visually balanced book cover from the information provided by the user.
+
+The user should enter:
+
+- Book title.
+- Subtitle, if applicable.
+- Author name.
+- Book genre.
+- Short description or book blurb.
+- Preferred color palette.
+- Preferred design style.
+- Cover type.
+- Optional uploaded image or illustration.
+
+The application should automatically determine an appropriate layout.
+
+Automatic design decisions
+
+The system should intelligently select:
+
+- Font combinations.
+- Title font size.
+- Subtitle font size.
+- Author name placement.
+- Text alignment.
+- Background colors.
+- Background images.
+- Text contrast.
+- Decorative elements.
+- Image positioning.
+- Spacing between elements.
+- Safe margins.
+- Appropriate text effects.
+
+The title should be visually dominant, while the subtitle and author name should remain readable and appropriately positioned.
+
+Automatically adjust text sizes when titles are long.
+
+Prevent titles, subtitles, author names, and other elements from overlapping unintentionally.
+
+Do not place text randomly. Use professional design rules to create balanced compositions.
+
+Genre-based design intelligence
+
+Provide presets for:
+
+- Fantasy.
+- Christian books.
+- Romance.
+- Thriller.
+- Mystery.
+- Horror.
+- Science fiction.
+- Historical fiction.
+- Biography.
+- Business.
+- Education.
+- Children's books.
+- Self-help.
+- Academic books.
+- Poetry.
+- General nonfiction.
+
+Each genre should have suitable typography, colors, visual elements, and layout recommendations.
+
+For example, fantasy covers may use dramatic lighting, atmospheric landscapes, cinematic typography, and magical visual elements. Christian books may use elegant typography, peaceful landscapes, symbolic imagery, and restrained decorative effects where appropriate.
+
+Do not make every genre look identical.
+
+Multiple design variations
+
+After entering the book details, allow the user to generate at least three alternative layouts using the same content.
+
+Provide buttons for:
+
+- Generate Designs.
+- Try Another Layout.
+- Change Style.
+- Improve Design.
+- Make More Professional.
+- Undo.
+- Redo.
+
+The user must be able to compare designs before selecting one.
+
+Use a local design rules engine for basic automated layout and styling. If advanced AI image generation is available, integrate it through a secure backend or an appropriate provider API.
+
+Do not pretend that AI image generation works if no generation service is connected.
+
+If an external service is required, clearly identify the missing integration and provide a functional interface for configuring it.
+
+5. PROFESSIONAL COVER EDITOR WITH LIVE PREVIEW
+
+The editing interface must show the actual cover at all times.
+
+When the user changes a color, the cover should change immediately.
+
+When the user adjusts brightness, contrast, font size, spacing, or other properties, the change should be visible immediately.
+
+Never hide editing operations in the background without updating the visible design.
+
+Preserve the existing Fabric.js canvas architecture if it is suitable for the required features.
+
+Provide intuitive controls for:
+
+- Selecting an element.
+- Moving an element.
+- Resizing an element.
+- Rotating an element.
+- Duplicating an element.
+- Deleting an element.
+- Aligning elements.
+- Locking elements.
+- Bringing elements forward.
+- Sending elements backward.
+- Resetting an element's changes.
+
+Provide alignment guides and snapping to help users position elements accurately.
+
+Add a simple Layers panel showing the cover elements and their order.
+
+Allow users to rename, hide, lock, reorder, and select layers.
+
+Keep the Layers panel optional so that beginners are not overwhelmed.
+
+6. ADVANCED TYPOGRAPHY
+
+Expand the existing font controls into a professional typography system.
+
+Include:
+
+- A useful collection of common book cover fonts.
+- Serif fonts.
+- Sans-serif fonts.
+- Display fonts.
+- Decorative fonts.
+- Handwriting-style fonts.
+- Font weight.
+- Font size.
+- Text color.
+- Alignment.
+- Line spacing.
+- Letter spacing.
+- Text transparency.
+- Text rotation.
+- Text background.
+- Text outlines.
+- Text shadows.
+- Text glow.
+- Gradient text.
+- Metallic gold effects.
+- Metallic silver effects.
+- Emboss and bevel effects where technically practical.
+
+Provide a preview when selecting a font.
+
+Organize fonts into categories so that users can find appropriate fonts quickly.
+
+Use fonts with suitable licensing for the intended commercial use, and provide licensing information where possible.
+
+Intelligent typography
+
+Automatically recommend font combinations that complement each other.
+
+Ensure the title remains readable at thumbnail size.
+
+Prevent text from extending beyond the cover boundaries.
+
+Automatically wrap long titles and adjust their font sizes.
+
+Allow users to override every automatic decision.
+
+Do not sacrifice readability for decorative effects.
+
+7. ADVANCED IMAGE EDITING
+
+Upgrade the existing image editing functionality.
+
+Preserve the working filters and improve their controls.
+
+Include:
+
+- Brightness.
+- Contrast.
+- Saturation.
+- Hue.
+- Exposure where supported.
+- Warmth and coolness.
+- Sharpness.
+- Blur.
+- Vignette.
+- Grain.
+- Noise.
+- Highlights and shadows where supported.
+- Grayscale.
+- Sepia.
+- Color overlays.
+- Gradient overlays.
+- Transparency.
+- Cropping.
+- Rotation.
+- Horizontal flipping.
+- Vertical flipping.
+- Image scaling.
+- Image positioning.
+
+Provide clear sliders and numeric values where useful.
+
+Add reset buttons for individual effects and a button to reset all image adjustments.
+
+Live effects
+
+Every image effect must be visible immediately in the preview.
+
+The user should not have to export the image to discover what an effect looks like.
+
+Use efficient rendering techniques so that applying effects does not make the application unresponsive.
+
+Advanced visual tools
+
+Where technically feasible, add:
+
+- Background removal.
+- Subject isolation.
+- Image masking.
+- Gradient masks.
+- Blending modes.
+- Image overlays.
+- Texture overlays.
+- Double exposure effects.
+- Light effects.
+- Atmospheric fog.
+- Cinematic lighting.
+- Decorative frames.
+- Borders.
+- Color grading presets.
+
+Background removal and AI-powered effects may require external services. Implement them only when the necessary processing engine or API is available.
+
+If an external service is needed, provide a clearly defined integration point rather than a fake button.
+
+8. UPLOAD AND EDIT EXISTING BOOK COVERS
+
+Users must be able to upload existing cover designs and continue editing them.
+
+Support common image formats such as JPG, JPEG, PNG, and WebP where the browser and libraries permit.
+
+Support PDF import through a suitable PDF rendering library when possible.
+
+Essential import behavior
+
+When an image is uploaded:
+
+1. Read its actual pixel dimensions.
+2. Determine its aspect ratio.
+3. Display it in the editor without unintentionally distorting it.
+4. Preserve its original proportions.
+5. Allow cropping and repositioning.
+6. Allow the user to add new text and graphic elements.
+7. Allow the user to apply image effects.
+8. Allow the user to export the edited design.
+
+Do not automatically stretch every uploaded image to fill the canvas.
+
+Provide options such as:
+
+- Fit to Canvas.
+- Fill Canvas.
+- Preserve Original Size.
+- Crop to Canvas.
+
+If an uploaded image contains an entire paperback wrap, recognize that it may contain the back cover, spine, and front cover.
+
+Do not treat every uploaded image as a front cover.
+
+Editing existing text
+
+An uploaded JPG or PNG is a flattened image. Its original text may not exist as separate editable objects.
+
+Do not falsely promise that every uploaded cover will automatically contain editable text layers.
+
+Where practical, add an OCR-assisted text detection feature that identifies likely text regions and allows the user to reconstruct the text as editable elements.
+
+The workflow should be:
+
+1. Detect likely text regions.
+2. Let the user review the detected text.
+3. Allow corrections.
+4. Estimate text placement, alignment, and size.
+5. Recreate text as editable elements.
+6. Allow the user to cover, erase, or replace the original text where technically possible.
+
+Provide a manual alternative when automatic detection fails.
+
+For PDF files, distinguish between vector text that can potentially be extracted and flattened text that exists only as pixels.
+
+Never silently destroy the original image. Preserve the original layer or provide a way to undo the reconstruction.
+
+9. PROFESSIONAL BLURB EDITOR
+
+Create a dedicated back-cover blurb editor.
+
+This feature must be easy to find and use.
+
+Allow users to:
+
+- Enter or edit the blurb.
+- Change font family.
+- Change font size.
+- Change font color.
+- Adjust line spacing.
+- Adjust paragraph spacing.
+- Change alignment.
+- Adjust text margins.
+- Set the blurb box width and height.
+- Move the blurb box.
+- Change the background color.
+- Adjust background transparency.
+- Add borders.
+- Add shadows.
+- Add subtle decorative effects.
+- Set internal padding.
+- Align the box within the back cover.
+
+Provide a live preview for every adjustment.
+
+The blurb must remain inside the designated back-cover area.
+
+Automatically calculate whether the blurb fits inside its box.
+
+If the text is too long, suggest reducing the font size, adjusting line spacing, or increasing the box dimensions.
+
+Do not silently remove words or shrink the text until it becomes unreadable.
+
+Provide a warning when the blurb is too small for comfortable reading.
+
+Allow users to add separate sections for:
+
+- Main blurb.
+- Author biography.
+- Publisher information.
+- Website or contact information.
+- Barcode reservation area.
+
+The user should be able to hide sections that are not required.
+
+10. AUTOMATIC BOOK DETAILS AND LAYOUT
+
+When the user enters book details, automatically insert the relevant information into the correct cover areas.
+
+For a front cover, use:
+
+- Title.
+- Subtitle.
+- Author name.
+
+For a paperback wrap, use:
+
+- Front cover title.
+- Front cover subtitle.
+- Author name.
+- Spine title.
+- Spine author name, if desired.
+- Back-cover blurb.
+- Author biography, if provided.
+- Barcode reservation area.
+- Publisher details, if provided.
+
+Automatically position these elements according to the selected template and cover dimensions.
+
+When a user changes the title, automatically update the title in the relevant locations.
+
+When the user changes the author name, update the applicable author fields.
+
+Do not require users to manually reposition every element after changing the book details.
+
+Provide an option to regenerate the layout while preserving user-entered content.
+
+If the user has manually positioned an element, do not overwrite that position without warning or an explicit instruction to regenerate the entire design.
+
+11. PROFESSIONAL COVER TEMPLATES LIBRARY
+
+Create a dedicated template library.
+
+Organize templates into categories such as:
+
+- Fantasy.
+- Christian.
+- Romance.
+- Thriller.
+- Mystery.
+- Business.
+- Education.
+- Children's books.
+- Biography.
+- Self-help.
+- Poetry.
+- Academic.
+- Minimalist.
+- Premium.
+- Classic.
+
+Each template should display:
+
+- A preview.
+- Its intended genre.
+- Its supported cover type.
+- Its available dimensions.
+- Its available customization options.
+- Its licensing status where known.
+
+Allow users to preview a template before applying it.
+
+When a template is selected, automatically populate the relevant text areas and adjust the layout to the user's book details.
+
+Template sources
+
+Provide a section for importing user-owned templates and integrating legitimately licensed external assets.
+
+Where possible, provide a way to browse free-to-use images and illustrations from suitable sources.
+
+Clearly distinguish between assets that are free for commercial use, assets requiring attribution, and assets requiring a paid licence.
+
+Do not scrape websites or embed copyrighted artwork without permission.
+
+Do not present a static collection of sample cards as a functioning online template library.
+
+If external asset browsing requires an API, implement a secure integration or provide a clearly explained setup requirement.
+
+12. PROFESSIONAL KDP COVER CALCULATOR
+
+Upgrade the existing KDP calculator into a reliable print-production calculator.
+
+The calculator should support the relevant options for Amazon Kindle Direct Publishing and other print-on-demand services when their specifications are available.
+
+Provide inputs for:
+
+- Paperback or hardcover.
+- Interior black and white or color.
+- Paper type.
+- Trim width.
+- Trim height.
+- Page count.
+- Bleed requirements.
+- Reading direction where applicable.
+- Cover finish where relevant.
+- Print provider.
+
+Calculate the cover's required dimensions using the appropriate provider specifications.
+
+Where the provider's current rules are available, use them rather than hardcoded assumptions.
+
+Paperback wrap
+
+Calculate:
+
+- Front cover width.
+- Back cover width.
+- Spine width.
+- Total wrap width.
+- Total wrap height.
+- Bleed.
+- Safe margins.
+- Spine text boundaries.
+- Barcode reservation area.
+
+Hardcover
+
+Use a separate hardcover calculation process.
+
+Do not reuse paperback formulas for hardcover.
+
+Account for the appropriate case laminate or dust-jacket format and the provider's relevant specifications.
+
+Do not invent hardcover dimensions or spine formulas.
+
+Calculator behavior
+
+Whenever an input changes, recalculate the dimensions automatically.
+
+Display measurements in inches and millimeters.
+
+Show a clear diagram identifying the front cover, spine, back cover, bleed, and safe areas.
+
+Allow the user to apply the calculated dimensions to the editor.
+
+Provide a prominent warning that the final measurements must be verified against the print provider's current official template before publishing.
+
+If the provider's exact specifications cannot be verified, clearly label the result as an estimate.
+
+Do not claim that a cover is KDP-compliant solely because it fits the calculated canvas.
+
+13. OFFICIAL TEMPLATE IMPORT
+
+Add a feature that allows users to upload a print provider's official cover template.
+
+The application should attempt to identify:
+
+- Total canvas dimensions.
+- Front-cover region.
+- Back-cover region.
+- Spine region.
+- Bleed boundaries.
+- Safe areas.
+- Barcode reservation area.
+
+Support common template formats where technically feasible.
+
+If the template is a PDF, render it at an appropriate resolution and preserve the actual page proportions.
+
+Allow users to verify or adjust the detected regions.
+
+Do not automatically assume that the uploaded template is a paperback wrap or that its regions can always be detected accurately.
+
+Once the user confirms the regions, lock the print guides so that they are not accidentally moved while editing the cover.
+
+Allow the guides to be hidden in the final exported artwork when appropriate.
+
+14. PROFESSIONAL EXPORT SYSTEM
+
+Upgrade the existing export system.
+
+Support the following outputs where technically feasible:
+
+- High-quality JPG.
+- PNG.
+- Print-ready PDF.
+- Editable project file.
+
+Provide separate export presets for:
+
+- Ebook front cover.
+- Paperback full wrap.
+- Hardcover cover.
+- General image export.
+
+Export controls
+
+Allow users to choose:
+
+- Output format.
+- Output dimensions.
+- Resolution where supported.
+- JPEG quality.
+- Background handling.
+- Whether guides should be included.
+- Whether bleed guides should be visible.
+- Whether to include the barcode reservation area.
+
+The editable project file should preserve text, image objects, layer order, relevant effects, and canvas dimensions.
+
+Print accuracy
+
+Do not assume that setting a PDF page's dimensions from canvas pixels divided by 300 automatically creates a valid print-ready PDF.
+
+Correctly handle physical page dimensions, image resolution, and PDF page sizing.
+
+Where possible, embed suitable fonts and preserve vector text and graphics.
+
+Ensure the PDF's physical dimensions match the intended print specifications.
+
+Check that the exported cover has the required dimensions and that text is not unintentionally clipped.
+
+Display warnings for low-resolution images, missing fonts, unsupported effects, and elements outside the printable area.
+
+Do not claim that an export is print-ready if its required properties have not been validated.
+
+15. COVER QUALITY CHECKER
+
+Create an automated cover inspection tool.
+
+Before export, analyse the cover and identify potential problems.
+
+Check for:
+
+- Text extending beyond the canvas.
+- Overlapping elements.
+- Titles that are too small.
+- Poor text-to-background contrast.
+- Excessive font combinations.
+- Low-resolution images.
+- Incorrect cover dimensions.
+- Insufficient bleed.
+- Text inside unsafe margins.
+- Spine text that may not fit.
+- Blurb text that is too small.
+- Barcode reservation conflicts.
+- Missing required information.
+- Possible image distortion.
+- Missing fonts or unsupported effects.
+
+Present results in three categories:
+
+Ready: No major issue detected.
+
+Warning: The cover may need improvement.
+
+Error: A serious problem must be corrected before the application can confirm that the selected requirements have been met.
+
+Each issue should include a practical explanation and, where possible, a button that takes the user to the relevant control.
+
+Do not label a cover perfect or guaranteed to pass a printer's checks when the system cannot verify that claim.
+
+16. THREE-DIMENSIONAL BOOK MOCKUPS
+
+Add a feature that allows users to preview their finished covers on realistic book mockups.
+
+Include:
+
+- Paperback standing upright.
+- Paperback lying flat.
+- Hardcover book.
+- Front cover presentation.
+- Front and back presentation.
+- Stacked books.
+- Promotional book display.
+
+Allow users to select a background and preview the cover in a professional setting.
+
+Where practical, generate mockups locally using canvas, CSS, WebGL, or a suitable rendering library.
+
+Allow users to export mockup images for promotional use.
+
+Keep mockup creation separate from print-ready cover export.
+
+A three-dimensional mockup must never replace the actual flat cover file required by a publisher.
+
+17. PROJECT MANAGEMENT AND AUTOSAVE
+
+Improve project saving and recovery.
+
+Implement:
+
+- Automatic local autosave.
+- Save Project.
+- Open Project.
+- Duplicate Project.
+- Rename Project.
+- Delete Project.
+- Recent Projects.
+- Restore Previous Session.
+- Export Editable Project.
+- Import Editable Project.
+
+Warn users before destructive operations.
+
+Recover the latest saved project after an accidental refresh or browser closure where possible.
+
+Do not claim that projects are stored online unless a working backend and storage system have been configured.
+
+If cloud storage is added, use proper authentication, access controls, secure file handling, and clear user permissions.
+
+18. SIMPLE MODE AND PROFESSIONAL MODE
+
+The application must serve beginners and advanced users without overwhelming either group.
+
+Simple Mode
+
+Show only the essential controls:
+
+- Book details.
+- Templates.
+- Automatic design.
+- Basic typography.
+- Background.
+- Images.
+- Preview.
+- Export.
+
+Professional Mode
+
+Provide additional tools:
+
+- Layers.
+- Advanced typography.
+- Image filters.
+- Blending.
+- Masks.
+- Alignment guides.
+- Print settings.
+- Detailed export options.
+- Advanced layout controls.
+
+Allow users to switch modes without losing their work.
+
+Keep the interface responsive and usable on small screens.
+
+On mobile, arrange the editor and controls so that users can see the cover clearly while editing.
+
+Avoid making important controls inaccessible behind oversized panels.
+
+19. TECHNICAL QUALITY AND SECURITY
+
+Inspect the current code before making changes.
+
+Retain existing working libraries and architecture where practical.
+
+Avoid replacing working components with unnecessary new dependencies.
+
+Use maintainable, well-organized JavaScript.
+
+Separate major functionality into logical modules where practical.
+
+Implement clear error messages and graceful handling of unsupported formats.
+
+Validate uploaded files and handle large images without freezing the interface.
+
+Avoid exposing secret API keys in client-side JavaScript.
+
+Any external API that requires a secret key must be accessed through a properly secured backend.
+
+Do not store sensitive credentials in local storage.
+
+Avoid loading untrusted scripts from unknown sources.
+
+Handle PDF rendering and image processing carefully.
+
+Ensure undo and redo work consistently across supported editing operations.
+
+Ensure that imported projects can be reopened without losing essential information.
+
+If the current application uses a single HTML file, preserve that structure if it remains practical. If additional files are genuinely necessary, explain the reason and provide a working implementation rather than leaving missing dependencies.
+
+20. PERFORMANCE AND RESPONSIVENESS
+
+The editor should remain responsive when handling high-resolution images.
+
+Use efficient preview rendering and separate preview quality from final export quality where necessary.
+
+Avoid regenerating the entire canvas unnecessarily after every small change.
+
+Prevent duplicate event listeners and repeated rendering loops.
+
+Ensure that image filters do not progressively degrade the original image through repeated destructive processing.
+
+Preserve original image data wherever practical so users can reverse adjustments.
+
+Test the application on desktop and mobile screen sizes.
+
+21. FUNCTIONAL TESTING
+
+After implementing the upgrade, test the actual functionality rather than relying on appearance.
+
+At minimum, verify the following workflows:
+
+1. Create a front cover from scratch.
+2. Enter a long title and confirm that it fits appropriately.
+3. Generate several design variations.
+4. Upload an existing JPG cover.
+5. Upload a PNG cover with transparency.
+6. Upload a PDF cover where supported.
+7. Import an existing paperback wrap without distorting it.
+8. Edit the blurb and see changes immediately.
+9. Change font size, color, alignment, and effects.
+10. Apply image filters and reset them.
+11. Move, resize, lock, and reorder layers.
+12. Calculate a paperback cover using verified specifications.
+13. Calculate a hardcover cover using the correct format.
+14. Apply cover dimensions to the editor.
+15. Export a high-quality image.
+16. Export a PDF and verify its physical dimensions.
+17. Save and reopen an editable project.
+18. Undo and redo editing operations.
+19. Confirm that mobile controls remain usable.
+20. Confirm that existing working features have not been broken.
+
+Test edge cases, including missing book details, unusually long titles, very short books, large page counts, unsupported files, and low-resolution images.
+
+Fix errors discovered during testing.
+
+Do not claim a test passed unless it was actually performed.
+
+22. IMPLEMENTATION PRIORITIES
+
+Do not attempt to implement every advanced feature simultaneously if doing so would destabilize the existing application.
+
+Implement the upgrade in stages.
+
+Phase 1: Essential improvements
+
+Prioritize:
+
+- Inspecting and preserving the existing application.
+- Fixing image import and aspect-ratio problems.
+- Improving the live editor.
+- Making blurb editing fully functional.
+- Improving automatic text placement.
+- Adding reliable automatic layouts.
+- Improving font and image controls.
+- Correcting paperback and hardcover calculation logic.
+- Improving export dimensions and PDF sizing.
+- Fixing existing bugs.
+
+Phase 2: Professional design tools
+
+Add:
+
+- Genre-based design presets.
+- Multiple automatic design variations.
+- Layers panel.
+- Advanced typography.
+- Expanded image effects.
+- Template management.
+- Cover quality checker.
+- Better project saving.
+
+Phase 3: Advanced features
+
+Add:
+
+- OCR-assisted text reconstruction.
+- Background removal.
+- Advanced masking and blending.
+- Official template import.
+- Realistic three-dimensional mockups.
+- Licensed external image integrations.
+- Optional AI-powered image generation.
+- Optional cloud storage.
+
+Do not let advanced features delay the completion of essential editing and export functions.
+
+23. FINAL INSTRUCTIONS
+
+Before changing the code, inspect the existing application and identify which features already work, which are incomplete, and which are broken.
+
+Do not discard working functionality.
+
+Do not replace functional tools with static demonstrations.
+
+Do not create buttons that have no working action.
+
+Do not claim that an external API is connected when it is not.
+
+Do not hardcode unverified printing specifications.
+
+Do not stretch uploaded cover images automatically.
+
+Do not promise that flattened image text is always directly editable.
+
+Do not claim that an image export is print-ready without validating the relevant requirements.
+
+Use sensible defaults so that a beginner can produce a good-looking cover without needing to understand professional design terminology.
+
+Keep the user in control of the final design.
+
+The final result should be a functional, professional, responsive book cover studio under the AlexForge CoverCraft brand, with intelligent automation, powerful editing, accurate print preparation, and an interface that remains much simpler to use than a general-purpose graphic design application.
+
+Begin by inspecting the existing source code. Then implement the improvements in the priority order above, test the finished features, and provide a clear summary of what was completed, what was tested, and which features still require an external service or additional setup.

@@ -1,0 +1,6 @@
+{
+  "name": "AlexForge CoverCraft",
+  "description": "Professional automated book cover design studio for ebooks, paperbacks, and hardcovers with print calculators, 3D mockups, and typography engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
